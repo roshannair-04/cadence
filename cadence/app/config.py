@@ -8,6 +8,8 @@ PROJECT = ROOT.parent                                   # .../hciproj
 MATERIAL_DIR = Path(os.environ.get("CADENCE_MATERIAL", PROJECT / "material"))
 DATA_DIR = Path(os.environ.get("CADENCE_DATA", ROOT / "data"))
 DB_PATH = DATA_DIR / "cadence.db"
+# Hosted mode: every browser gets its own private workspace (own database and files). Local runs stay single-user.
+MULTI = os.environ.get("CADENCE_MULTI") == "1"
 STATIC_DIR = ROOT / "static"
 
 # Local LLM through Ollama (free, runs on your machine). Optional: without it the

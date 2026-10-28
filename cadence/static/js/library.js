@@ -1,4 +1,5 @@
 import { get, post } from "./api.js";
+import { state } from "./state.js";
 import { esc, icon, toast, announce, confirmBox, $ } from "./util.js";
 
 async function send(files) {
@@ -13,7 +14,7 @@ export async function render(root) {
   const docs = await get("/api/documents");
   const total = docs.reduce((a, d) => a + d.sections, 0);
   root.innerHTML = `<header class="page-head"><div><h1>Your material</h1>
-    <p>${docs.length ? `${docs.length} file${docs.length === 1 ? "" : "s"}, ${total} sections.` : "Add your lecture slides, PDFs or notes and Cadence turns them into layered notes and quizzes."} Adding a file never touches your progress.</p></div></header>
+    <p>${docs.length ? `${docs.length} file${docs.length === 1 ? "" : "s"}, ${total} sections.` : "Add your lecture slides, PDFs or notes and Cadence turns them into layered notes and quizzes."} Adding a file never touches your progress.${state.status?.private ? " Your files live in a private workspace tied to this browser: other people and other devices see their own empty one." : ""}</p></div></header>
     <label class="drop" id="drop" for="pick"><span class="drop-ico">${icon("upload")}</span>
       <b>Drop files here, or choose them</b><span class="muted small">PDF, PPTX, TXT or MD, up to 40 MB each. Takes a few seconds per file.</span>
       <input id="pick" class="sr" type="file" multiple accept=".pdf,.pptx,.txt,.md"></label>

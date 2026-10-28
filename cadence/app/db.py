@@ -3,6 +3,7 @@ import json
 import sqlite3
 import threading
 from contextlib import contextmanager
+from contextvars import ContextVar
 
 from .config import DATA_DIR, DB_PATH
 
@@ -45,16 +46,28 @@ CREATE TABLE IF NOT EXISTS meta(key TEXT PRIMARY KEY, value TEXT);
 """
 
 _local = threading.local()
+WS = ContextVar("workspace", default=None)      # set per request in hosted mode
+
+
+def path():
+    ws = WS.get()
+    return DATA_DIR / "ws" / ws / "cadence.db" if ws else DB_PATH
 
 
 def conn() -> sqlite3.Connection:
-    c = getattr(_local, "c", None)
+    p = path()
+    cs = _local.__dict__.setdefault("cs", {})
+    c = cs.get(p)
     if c is None:
-        DATA_DIR.mkdir(parents=True, exist_ok=True)
-        c = sqlite3.connect(DB_PATH, timeout=30)
+        if len(cs) > 16:                          # ponytail: crude cap on open workspace connections per thread
+            for x in cs.values():
+                x.close()
+            cs.clear()
+        p.parent.mkdir(parents=True, exist_ok=True)
+        c = sqlite3.connect(p, timeout=30)
         c.row_factory = sqlite3.Row
         c.execute("PRAGMA journal_mode=WAL")
-        _local.c = c
+        cs[p] = c
     return c
 
 

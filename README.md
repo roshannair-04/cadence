@@ -82,7 +82,7 @@ Cadence needs a Python host (FastAPI plus SQLite), so it cannot run as a static 
 - **Hugging Face Spaces:** create a Docker Space and upload the repo. Port 7860 is already the default.
 - **Anywhere with Docker:** `docker build -t cadence . && docker run -p 7860:7860 -v cadence-data:/data cadence`
 
-Notes: the cloud version uses the built-in engine because Ollama will not be there. Uploaded files and progress live in `/data`, so attach a persistent disk or they reset when the instance restarts. There is no login, so anyone with the link shares one account and can upload or delete material.
+Notes: the cloud version uses the built-in engine because Ollama will not be there. Uploaded files and progress live in `/data`, so attach a persistent disk or they reset when the instance restarts. There is no login: each browser gets its own private workspace through a cookie, so visitors never see each other's files or progress, but clearing site data or switching device starts a fresh, empty one.
 
 ## Honest limits
 
@@ -90,7 +90,7 @@ Notes: the cloud version uses the built-in engine because Ollama will not be the
 - The learner model parameters are sensible defaults, not fitted to real learners. The forgetting curve is an estimate.
 - Scanned PDFs without a text layer cannot be read (they need OCR first).
 - The Ollama path has only been tested against a mock server.
-- Single user. There is one shared learner, so a group comparison of the adaptive and control versions is not possible in the app.
+- One learner per browser. A group comparison of the adaptive and control versions across people is not built into the app, and progress does not sync between devices.
 
 ## Settings
 

@@ -1,6 +1,8 @@
 """FastAPI server: JSON API + the static front end."""
 import json
 import random
+import re
+import secrets
 import time
 from pathlib import Path
 from typing import List, Optional
@@ -11,7 +13,7 @@ from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 
 from . import analytics, build, db, llm, tracing
-from .config import MATERIAL_DIR, OLLAMA_MODEL, STATIC_DIR
+from .config import MATERIAL_DIR, MULTI, OLLAMA_MODEL, STATIC_DIR
 
 app = FastAPI(title="Cadence")
 
@@ -24,8 +26,40 @@ async def no_stale_assets(request, call_next):
     return r
 
 
+_ready = set()
+
+
+@app.middleware("http")
+async def workspace(request, call_next):
+    """Hosted mode: a random cookie picks the visitor's own database and material folder."""
+    ws, new = None, False
+    if MULTI and (request.url.path == "/" or request.url.path.startswith("/api/")):
+        ws = request.cookies.get("cadence_ws", "")
+        if not re.fullmatch(r"[0-9a-f]{32}", ws):
+            ws, new = secrets.token_hex(16), True
+        db.WS.set(ws)
+        if ws not in _ready:
+            db.init()
+            if db.one("SELECT COUNT(*) n FROM users")["n"] == 0:
+                with db.tx() as c:
+                    c.execute("INSERT INTO users(name,mode,created) VALUES('You','adaptive',?)", (time.time(),))
+            _ready.add(ws)
+    resp = await call_next(request)
+    if new:
+        resp.set_cookie("cadence_ws", ws, max_age=31536000, httponly=True, samesite="lax",
+                        secure=request.headers.get("x-forwarded-proto") == "https")
+    return resp
+
+
+def mat_dir():
+    ws = db.WS.get()
+    return MATERIAL_DIR / "ws" / ws if ws else MATERIAL_DIR
+
+
 @app.on_event("startup")
 def startup():
+    if MULTI:
+        return
     db.init()
     if db.one("SELECT COUNT(*) n FROM sections")["n"] == 0:
         build.build(MATERIAL_DIR)
@@ -48,7 +82,7 @@ def status():
     st = llm.status()
     return {"llm": st, "sections": db.one("SELECT COUNT(*) n FROM sections")["n"],
             "questions": db.one("SELECT COUNT(*) n FROM questions")["n"],
-            "llm_questions": db.one("SELECT COUNT(*) n FROM questions WHERE source='llm'")["n"]}
+            "llm_questions": db.one("SELECT COUNT(*) n FROM questions WHERE source='llm'")["n"], "private": MULTI}
 
 
 class ModelIn(BaseModel):
@@ -115,7 +149,7 @@ def documents():
 
 @app.post("/api/materials")
 def upload(files: List[UploadFile] = File(...)):
-    MATERIAL_DIR.mkdir(parents=True, exist_ok=True)
+    mat_dir().mkdir(parents=True, exist_ok=True)
     added, problems = [], []
     for f in files:
         name = Path(f.filename or "").name
@@ -123,13 +157,13 @@ def upload(files: List[UploadFile] = File(...)):
             problems.append(f"{name or 'file'}: only PDF, PPTX, TXT and MD files are supported"); continue
         if db.one("SELECT 1 x FROM documents WHERE filename=?", (name,)):
             problems.append(f"{name}: already in your library"); continue
-        dest = MATERIAL_DIR / name
+        dest = mat_dir() / name
         data = f.file.read(40 * 1024 * 1024 + 1)
         if len(data) > 40 * 1024 * 1024:
             problems.append(f"{name}: larger than 40 MB"); continue
         dest.write_bytes(data)
         try:
-            n = build.build(MATERIAL_DIR, only=[dest], log=lambda *_: None)
+            n = build.build(mat_dir(), only=[dest], log=lambda *_: None)
         except Exception as e:  # unreadable or corrupt file
             n = 0
         if not n:
@@ -151,7 +185,7 @@ def delete_document(did: int):
         c.execute(f"DELETE FROM questions WHERE section_id IN ({ids})", (did,))
         c.execute("DELETE FROM sections WHERE doc_id=?", (did,))
         c.execute("DELETE FROM documents WHERE id=?", (did,))
-    (MATERIAL_DIR / d["filename"]).unlink(missing_ok=True)
+    (mat_dir() / d["filename"]).unlink(missing_ok=True)
     return {"ok": True}
 
 
