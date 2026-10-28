@@ -16,6 +16,14 @@ from .config import MATERIAL_DIR, OLLAMA_MODEL, STATIC_DIR
 app = FastAPI(title="Cadence")
 
 
+@app.middleware("http")
+async def no_stale_assets(request, call_next):
+    r = await call_next(request)
+    if not request.url.path.startswith("/api/"):
+        r.headers["Cache-Control"] = "no-cache"   # always revalidate, so updates show without a hard refresh
+    return r
+
+
 @app.on_event("startup")
 def startup():
     db.init()
