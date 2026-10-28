@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cadence: study what you have not learned yet</title>
+<meta name="description" content="Drop in your slides and PDFs. Cadence writes layered notes, quizzes you, and works out what to study next.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='16' fill='%232B5748'/%3E%3Cpath d='M9 22c0-8 5-13 14-13 0 8-5 13-14 13z' fill='%239CB080'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="/styles.css">
+<link rel="stylesheet" href="/landing.css">
+<script>
+  try { const s = JSON.parse(localStorage.getItem("cadence.display") || "{}"); if (s.theme && s.theme !== "auto") document.documentElement.dataset.theme = s.theme; } catch (e) {}
+</script>
+</head>
+<body class="land">
+<a class="skip" href="#main">Skip to content</a>
+<div class="shell">
+  <header class="top">
+    <a class="brand" href="/" aria-label="Cadence, home"><span class="mark" data-i="leaf"></span><span>Cadence</span></a>
+    <nav class="lnav" aria-label="Page"><a href="#how">How it works</a><a href="#model">The model</a><a href="#care">Built with care</a></nav>
+    <a class="btn primary who" href="/app">Open Cadence</a>
+  </header>
+
+  <main id="main">
+    <section class="hero">
+      <div class="hero-copy">
+        <h1>Study what you haven't learned yet.</h1>
+        <p class="lede">Drop in your slides and PDFs. Cadence turns them into layered notes and quizzes, works out what you actually know, and tells you what to study next.</p>
+        <div class="hero-cta">
+          <a class="btn primary big" href="/app"><span data-i="arrow"></span>Open Cadence</a>
+          <a class="btn ghost big" href="#how">See how it works</a>
+        </div>
+        <p class="small muted">Free. No account. Your files stay in a private workspace tied to your browser.</p>
+      </div>
+      <figure class="hero-shot">
+        <span class="blob b1" aria-hidden="true"></span><span class="blob b2" aria-hidden="true"></span>
+        <img src="/img/dashboard.webp" width="1600" height="1666" alt="The Cadence dashboard: a next-up plan, a mastery map of leaves, and a forgetting curve" fetchpriority="high">
+      </figure>
+    </section>
+
+    <section id="how" class="how">
+      <h2>From a folder of slides to a plan for tonight</h2>
+      <ol class="steps2">
+        <li>
+          <div class="txt"><span class="n">1</span><h3>Add your material</h3>
+          <p>Upload PDFs, PowerPoints or text files. Cadence splits them into sections, finds the facts and key terms, and keeps your own wording. Nothing is made up.</p></div>
+          <div class="pic"><img src="/img/study.webp" loading="lazy" width="1200" height="750" alt="A reading view with key points, notes and a deep dive, and key terms in the margin"></div>
+        </li>
+        <li class="flip">
+          <div class="txt"><span class="n">2</span><h3>Read in layers</h3>
+          <p>Start with three key points, read the full notes, go deeper with self-explanation prompts, or ask for the simpler version. After wrong answers, Cadence offers it before you ask.</p></div>
+          <div class="pic"><img src="/img/quiz.webp" loading="lazy" width="1000" height="1322" alt="A quiz question with instant feedback and a section mastery bar"></div>
+        </li>
+        <li>
+          <div class="txt"><span class="n">3</span><h3>Get quizzed on what matters</h3>
+          <p>Every answer updates what Cadence thinks you know. The next question targets weak or fading sections, and it tells you why it picked it.</p></div>
+          <div class="pic pic-dark"><img src="/img/dashboard-dark.webp" loading="lazy" width="1600" height="1000" alt="The dashboard in dark mode"></div>
+        </li>
+      </ol>
+    </section>
+
+    <section id="model" class="model">
+      <div class="model-in">
+        <h2>A small model of your memory</h2>
+        <p class="lede2">Two well-known ideas, kept simple and visible.</p>
+        <dl class="facts">
+          <div><dt>Bayesian Knowledge Tracing</dt><dd>Each section starts at a modest guess of what you know. A right answer raises it, a wrong one lowers it, and lucky guesses are discounted.</dd></div>
+          <div><dt>A forgetting curve</dt><dd>Recall fades over time. When the estimate for a section drops below 70%, it comes back as due for review.</dd></div>
+          <div><dt>Nothing hidden</dt><dd>The dashboard shows the map, the curve and the reasons. It is an estimate, and it says so.</dd></div>
+        </dl>
+      </div>
+      <div class="leafmap" aria-hidden="true"></div>
+    </section>
+
+    <section id="care" class="care">
+      <h2>Made to be usable by everyone</h2>
+      <ul class="care-list">
+        <li><span data-i="ear"></span><div><b>Read aloud and keyboard first</b><p>Answer whole quizzes without a mouse. Every chart has a table view.</p></div></li>
+        <li><span data-i="sliders"></span><div><b>Your reading comfort</b><p>Atkinson Hyperlegible or Lexend, text size and spacing, higher contrast, reduced motion, light and dark.</p></div></li>
+        <li><span data-i="books"></span><div><b>Private by default</b><p>Each browser gets its own workspace. Other people and other devices never see your files.</p></div></li>
+        <li><span data-i="flask"></span><div><b>A way to check it works</b><p>A pre-check and post-check show your learning gain, and a short survey scores the tool itself.</p></div></li>
+      </ul>
+    </section>
+
+    <section class="final">
+      <h2>Bring your own slides.</h2>
+      <a class="btn mark big" href="/app"><span data-i="upload"></span>Open Cadence</a>
+    </section>
+  </main>
+
+  <footer class="foot lfoot"><span>Cadence, a study tool built for the HCI course AIM4141.</span><a href="https://github.com/roshannair-04/cadence">Source on GitHub</a></footer>
+</div>
+<script type="module">
+  import { icon } from "/js/util.js";
+  import { fallingLeaves } from "/js/leaves.js";
+  document.querySelectorAll("[data-i]").forEach((e) => { e.innerHTML = icon(e.dataset.i); e.setAttribute("aria-hidden", "true"); });
+  const m = document.querySelector(".leafmap");
+  const ramp = [0, 0, 1, 2, 3, 4, 5, 6, 7, 5, 3, 6, 7, 4, 2, 5, 6, 7, 7, 3, 1, 4, 6, 7];
+  m.innerHTML = ramp.map((b, i) => `<i data-bin="${b}" style="--d:${i * 40}ms"></i>`).join("");
+  fallingLeaves(window.innerWidth < 700 ? 18 : 34);
+</script>
+</body>
+</html>

@@ -33,7 +33,7 @@ _ready = set()
 async def workspace(request, call_next):
     """Hosted mode: a random cookie picks the visitor's own database and material folder."""
     ws, new = None, False
-    if MULTI and (request.url.path == "/" or request.url.path.startswith("/api/")):
+    if MULTI and (request.url.path in ("/", "/app") or request.url.path.startswith("/api/")):
         ws = request.cookies.get("cadence_ws", "")
         if not re.fullmatch(r"[0-9a-f]{32}", ws):
             ws, new = secrets.token_hex(16), True
@@ -414,6 +414,11 @@ def export(table: str, user: Optional[int] = None):
 # ------------------------------------------------------------------ static
 
 @app.get("/")
+def landing():
+    return FileResponse(STATIC_DIR / "landing.html")
+
+
+@app.get("/app")
 def index():
     return FileResponse(STATIC_DIR / "index.html")
 

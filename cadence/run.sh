@@ -13,5 +13,5 @@ conda activate cadence
 
 PORT="${PORT:-8000}"
 echo "Cadence is starting at http://localhost:$PORT   (Ctrl+C to stop)"
-( sleep 2; (open "http://localhost:$PORT" || xdg-open "http://localhost:$PORT") >/dev/null 2>&1 ) &
+( sleep 2; (open "http://localhost:$PORT/app" || xdg-open "http://localhost:$PORT/app") >/dev/null 2>&1 ) &
 exec python -m uvicorn app.main:app --host 127.0.0.1 --port "$PORT"

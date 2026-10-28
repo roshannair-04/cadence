@@ -67,7 +67,7 @@ cadence/
   app/        ingest.py  nlp.py  generate.py  build.py    material to notes and questions
               tracing.py  analytics.py                    learner model and dashboard data
               llm.py  db.py  main.py  config.py           optional Ollama, SQLite, FastAPI server
-  static/     index.html  styles.css  js/                 the front end (no build step)
+  static/     landing.html  index.html  styles.css  js/   landing page and the app (no build step)
   run.sh  environment.yml  requirements.txt  titles.json
 Dockerfile  render.yaml                                    deployment
 ```
