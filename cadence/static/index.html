@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cadence: adaptive notes and quizzes</title>
+<meta name="description" content="Read layered notes, test yourself, and let the dashboard show what to study next.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='16' fill='%232B5748'/%3E%3Cpath d='M9 22c0-8 5-13 14-13 0 8-5 13-14 13z' fill='%239CB080'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="/styles.css">
+<script>
+  // apply saved display settings before first paint to avoid a flash
+  try {
+    const s = JSON.parse(localStorage.getItem('cadence.display') || '{}');
+    const r = document.documentElement;
+    if (s.theme && s.theme !== 'auto') r.dataset.theme = s.theme;
+    if (s.font === 'lexend') r.dataset.font = 'lexend';
+    if (s.size) r.style.setProperty('--scale', s.size);
+    if (s.spacing) r.style.setProperty('--lh', s.spacing);
+    if (s.contrast) r.dataset.contrast = 'high';
+    if (s.motion === 'reduce') r.dataset.motion = 'reduce';
+  } catch (e) {}
+</script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<div class="shell">
+  <header class="top">
+    <a class="brand" href="#/" aria-label="Cadence, home"><span class="mark" id="brandMark"></span><span>Cadence</span></a>
+    <nav aria-label="Main"><ul class="nav" id="nav"></ul></nav>
+    <div class="who">
+      <span class="mode-chip" id="modeChip"></span>
+      <button class="btn sm" id="displayBtn" type="button" aria-haspopup="dialog" aria-expanded="false"><span id="displayIco"></span>Display</button>
+    </div>
+  </header>
+  <main id="main" tabindex="-1"></main>
+  <footer class="foot"><div class="llm-note" id="llmNote"></div></footer>
+</div>
+
+<div id="popover" class="popover" role="dialog" aria-label="Display and tools" hidden></div>
+<div id="tip" class="tip" role="tooltip" hidden></div>
+<div id="live" class="sr" aria-live="polite"></div>
+<script type="module" src="/js/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,11 @@
+{
+  "_comment": "Rename sections whose slide headings couldn't be read cleanly. Format: \"title shown now\": \"better title\". Then run: python -m app.build --force",
+  "Reduces": "Why a good interface matters",
+  "Challenges in Human": "Challenges in HCI",
+  "Benefits Faster task": "Benefits of HCI and module summary",
+  "Never get it right first time!": "Interaction design basics",
+  "And their interaction … & Steps …": "The design process",
+  "Makes her ‘real’ & Example persona": "Know your user: personas",
+  "Inform interviews, prompt ideas, enculture designers": "Studying users: observation and probes",
+  "Also play act … & Use several methods": "Scenarios and exploring with prototypes"
+}

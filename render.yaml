@@ -1,0 +1,6 @@
+services:
+  - type: web
+    name: cadence
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    plan: free   # free instances sleep when idle and lose uploads/progress on restart; use a paid plan + disk to keep them
